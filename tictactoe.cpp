@@ -41,3 +41,37 @@ void mostrarReferencia() {
     cout << " " << endl;
     cout << "=================" << endl;
 }
+
+// --- MENÚ PRINCIPAL ---
+
+void menuPrincipal() {
+    int opcion = 0;
+    while (opcion != 2) {
+        cout << "\n=== TIC TAC TOE ===" << endl;
+        cout << "1. Jugar nueva partida" << endl;
+        cout << "2. Salir" << endl;
+        cout << "Seleccione una opción: ";
+
+        // Leer la opción y validar entrada
+        if (!(cin >> opcion)) {
+            cout << "Opción inválida. Intente de nuevo." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
+        if (opcion == 1) {
+            jugarPartida();
+        } else if (opcion == 2) {
+            cout << "¡Gracias por jugar! " << endl;
+        } else {
+            cout << "Opción no reconocida. Por favor, seleccione 1 o 2." << endl;
+        }
+    }
+}
+
+int main() {
+    menuPrincipal();
+    return 0;
+}
+
