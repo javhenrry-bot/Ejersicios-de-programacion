@@ -1,0 +1,256 @@
+// realizado en GBD DEBUGGER con C++
+//
+
+#include <iostream>
+#include <vector>
+#include <limits> // Para limpiar el buffer de entrada
+
+using namespace std;
+
+// --- CONSTANTES GLOBALES ---
+const int FILAS = 6;
+const int COLUMNAS = 7;
+const char VACIO = ' ';
+const char JUGADOR_1 = 'X';
+const char JUGADOR_2 = 'O';
+
+// Tipo de dato para el tablero (matriz de caracteres)
+typedef vector<vector<char>> Tablero;
+
+// --- DECLARACIONES DE FUNCIONES ---
+void inicializarTablero(Tablero& tab);
+void dibujarTablero(const Tablero& tab);
+bool colocarFicha(Tablero& tab, int columna, char jugador);
+bool verificarGanador(const Tablero& tab, char jugador, int ultimaFila, int ultimaCol);
+bool estaLleno(const Tablero& tab);
+int obtenerMovimiento(char jugadorActual);
+void jugarConecta4();
+
+// =======================================================
+// ============== DIBUJO DEL TABLERO =====================
+// =======================================================
+
+/**
+ * @brief Inicializa el tablero con todos los espacios vacíos.
+ * @param tab El tablero (pasado por referencia para modificarlo).
+ */
+void inicializarTablero(Tablero& tab) {
+    // Redimensiona el vector a 6 filas y 7 columnas, inicializando con VACIO (' ')
+    tab.assign(FILAS, vector<char>(COLUMNAS, VACIO));
+}
+
+/**
+ * @brief Imprime el estado actual del tablero en la consola.
+ * @param tab El tablero (pasado por constante referencia para no modificarlo).
+ */
+void dibujarTablero(const Tablero& tab) {
+    // 1. Dibuja los números de columna
+    cout << "\n  1   2   3   4   5   6   7\n";
+    // 2. Dibuja las líneas superiores
+    cout << "+---+---+---+---+---+---+---+\n";
+
+    // 3. Dibuja las filas del tablero (de arriba a abajo)
+    for (int i = 0; i < FILAS; ++i) {
+        cout << "|";
+        for (int j = 0; j < COLUMNAS; ++j) {
+            // Imprime la ficha o un espacio si está vacío
+            cout << " " << tab[i][j] << " |";
+        }
+        cout << "\n+---+---+---+---+---+---+---+\n";
+    }
+}
+
+// =======================================================
+// =======      AQUI LA LÓGICA DEl MOVIMIENTO        =====
+// =======================================================
+
+/**
+ * @brief Coloca la ficha en la columna elegida, buscando la posición más baja.
+ * @param tab El tablero.
+ * @param columna El índice de la columna (1 a 7).
+ * @param jugador La ficha del jugador ('X' u 'O').
+ * @return true si la ficha se colocó con éxito, false si la columna estaba llena.
+ */
+
+bool colocarFicha(Tablero& tab, int columna, char jugador) {
+    // Columna se convierte a índice de array (0 a 6)
+    int col_idx = columna - 1; 
+
+    // Recorrer el array de filas desde abajo (FILAS - 1) hacia arriba (0)
+    for (int i = FILAS - 1; i >= 0; --i) {
+        if (tab[i][col_idx] == VACIO) {
+            // Se encontró el primer espacio vacío desde abajo
+            tab[i][col_idx] = jugador;
+            return true; // Movimiento exitoso
+        }
+    }
+    return false; // Columna llena
+}
+
+/**
+ * @brief Solicita y valida la entrada del jugador para elegir una columna.
+ * @param jugadorActual La ficha del jugador al que le toca.
+ * @return La columna elegida (entre 1 y 7).
+ */
+int obtenerMovimiento(char jugadorActual) {
+    int columna;
+    cout << "Jugador " << jugadorActual << ", elige una columna (1-7): ";
+
+    // Bucle para asegurar que la entrada sea válida
+    while (!(cin >> columna) || columna < 1 || columna > COLUMNAS) {
+        // Manejo de error si se introduce algo que no es un número o está fuera de rango
+        cout << "Entrada inválida. Debe ser un número entre 1 y 7: ";
+        cin.clear(); // Limpia el estado de error de cin
+        // Ignora el resto del buffer de entrada (hasta un salto de línea)
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+    }
+    return columna;
+}
+
+// =======================================================
+// ===      LÓGICA DE VERIFICACIÓN DE FIN DE JUEGO     ===
+// =======================================================
+
+/**
+ * @brief Verifica si un jugador ha conectado 4 fichas en cualquier dirección.
+ * * Se optimiza revisando solo alrededor de la *última ficha* colocada.
+ * @param tab El tablero.
+ * @param jugador La ficha del jugador a verificar.
+ * @param ultimaFila La fila donde se colocó la última ficha.
+ * @param ultimaCol La columna donde se colocó la última ficha.
+ * @return true si se encontró una conexión de 4, false en caso contrario.
+ */
+bool verificarGanador(const Tablero& tab, char jugador) {
+    // --- 1. VERIFICACIÓN HORIZONTAL ---
+    for (int i = 0; i < FILAS; ++i) {
+        for (int j = 0; j <= COLUMNAS - 4; ++j) {
+            if (tab[i][j] == jugador && 
+                tab[i][j+1] == jugador && 
+                tab[i][j+2] == jugador && 
+                tab[i][j+3] == jugador) {
+                return true;
+            }
+        }
+    }
+
+    // --- 2. VERIFICACIÓN VERTICAL ---
+    for (int j = 0; j < COLUMNAS; ++j) {
+        for (int i = 0; i <= FILAS - 4; ++i) {
+            if (tab[i][j] == jugador && 
+                tab[i+1][j] == jugador && 
+                tab[i+2][j] == jugador && 
+                tab[i+3][j] == jugador) {
+                return true;
+            }
+        }
+    }
+
+    // --- 3. VERIFICACIÓN DIAGONAL (Descendente: de arriba-izquierda a abajo-derecha) ---
+    for (int i = 0; i <= FILAS - 4; ++i) {
+        for (int j = 0; j <= COLUMNAS - 4; ++j) {
+            if (tab[i][j] == jugador && 
+                tab[i+1][j+1] == jugador && 
+                tab[i+2][j+2] == jugador && 
+                tab[i+3][j+3] == jugador) {
+                return true;
+            }
+        }
+    }
+
+    // --- 4. VERIFICACIÓN DIAGONAL (Ascendente: de abajo-izquierda a arriba-derecha) ---
+    for (int i = 3; i < FILAS; ++i) { // Empezamos desde la fila 3 (índice 3)
+        for (int j = 0; j <= COLUMNAS - 4; ++j) {
+            if (tab[i][j] == jugador && 
+                tab[i-1][j+1] == jugador && 
+                tab[i-2][j+2] == jugador && 
+                tab[i-3][j+3] == jugador) {
+                return true;
+            }
+        }
+    }
+
+    return false; // No hay conexión de 4
+}
+
+/**
+ * @brief Verifica si el tablero está completamente lleno (empate).
+ * @param tab El tablero.
+ * @return true si todas las celdas están ocupadas, false en caso contrario.
+ */
+bool estaLleno(const Tablero& tab) {
+    // Solo necesitamos verificar la fila superior (índice 0).
+    // Si la fila 0 no tiene ningún espacio vacío, el tablero está lleno.
+    for (int j = 0; j < COLUMNAS; ++j) {
+        if (tab[0][j] == VACIO) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+// =======================================================
+// =======      FUNCIÓN PRINCIPAL DEL JUEGO        =======
+// =======================================================
+
+/**
+ * @brief Función principal que contiene el bucle del juego.
+ */
+void jugarConecta4() {
+    Tablero tablero;
+    inicializarTablero(tablero);
+    char jugadorActual = JUGADOR_1;
+    bool juegoTerminado = false;
+
+    cout << "===== ¡Bienvenido a Conecta 4! =====\n";
+    cout << "Jugador 1: " << JUGADOR_1 << " | Jugador 2: " << JUGADOR_2 << "\n";
+
+    // Bucle principal del juego
+    while (!juegoTerminado) {
+        
+        // 1. Mostrar el estado actual del tablero
+        dibujarTablero(tablero);
+
+        // 2. Obtener movimiento válido del jugador actual
+        int columna;
+        bool movimientoValido = false;
+
+        do {
+            columna = obtenerMovimiento(jugadorActual);
+            
+            // 3. Intentar colocar la ficha
+            if (colocarFicha(tablero, columna, jugadorActual)) {
+                movimientoValido = true;
+            } else {
+                cout << "¡Columna " << columna << " está llena! Elige otra.\n";
+            }
+        } while (!movimientoValido);
+
+        // 4. Verificar condición de fin de juego (Ganador)
+        // Nota: Solo necesitamos verificar si ganó después de que hizo su movimiento
+        if (verificarGanador(tablero, jugadorActual)) {
+            dibujarTablero(tablero);
+            cout << "\n¡¡¡FELICIDADES JUGADOR " << jugadorActual << ", HAS GANADO!!!\n";
+            juegoTerminado = true;
+        } 
+        // 5. Verificar condición de fin de juego (Empate)
+        else if (estaLleno(tablero)) {
+            dibujarTablero(tablero);
+            cout << "\n¡El tablero está lleno! Es un EMPATE.\n";
+            juegoTerminado = true;
+        }
+        // 6. Cambiar de turno
+        else {
+            // Operador ternario: si es J1, cambia a J2, si no (es J2), cambia a J1
+            jugadorActual = (jugadorActual == JUGADOR_1) ? JUGADOR_2 : JUGADOR_1;
+        }
+    }
+    cout << "\n===== FIN DEL JUEGO =====\n";
+}
+
+
+
+int main() {
+    jugarConecta4();
+    return 0;
+}
