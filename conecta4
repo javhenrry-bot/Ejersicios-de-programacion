@@ -1,0 +1,24 @@
+#include <iostream>
+#include <vector>
+#include <limits> // Para limpiar el buffer de entrada
+
+using namespace std;
+
+// --- CONSTANTES GLOBALES ---
+const int FILAS = 6;
+const int COLUMNAS = 7;
+const char VACIO = ' ';
+const char JUGADOR_1 = 'X';
+const char JUGADOR_2 = 'O';
+
+// Tipo de dato para el tablero (matriz de caracteres)
+typedef vector<vector<char>> Tablero;
+
+// --- DECLARACIONES DE FUNCIONES ---
+void inicializarTablero(Tablero& tab);
+void dibujarTablero(const Tablero& tab);
+bool colocarFicha(Tablero& tab, int columna, char jugador);
+bool verificarGanador(const Tablero& tab, char jugador, int ultimaFila, int ultimaCol);
+bool estaLleno(const Tablero& tab);
+int obtenerMovimiento(char jugadorActual);
+void jugarConecta4();
