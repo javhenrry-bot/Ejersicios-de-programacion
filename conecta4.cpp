@@ -1,5 +1,7 @@
 // realizado en GBD DEBUGGER con C++
-//
+// https://github.com/javhenrry-bot/Ejersicios-de-programacion.git
+// Se realizo el codigo en C, y aqui se corrige y se cambia a C++
+// Deje ambos archivos
 
 #include <iostream>
 #include <vector>
