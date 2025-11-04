@@ -190,6 +190,60 @@ bool estaLleno(const Tablero& tab) {
 // =======      FUNCIÓN PRINCIPAL DEL JUEGO        =======
 // =======================================================
 
+/**
+ * @brief Función principal que contiene el bucle del juego.
+ */
+void jugarConecta4() {
+    Tablero tablero;
+    inicializarTablero(tablero);
+    char jugadorActual = JUGADOR_1;
+    bool juegoTerminado = false;
+
+    cout << "===== ¡Bienvenido a Conecta 4! =====\n";
+    cout << "Jugador 1: " << JUGADOR_1 << " | Jugador 2: " << JUGADOR_2 << "\n";
+
+    // Bucle principal del juego
+    while (!juegoTerminado) {
+        
+        // 1. Mostrar el estado actual del tablero
+        dibujarTablero(tablero);
+
+        // 2. Obtener movimiento válido del jugador actual
+        int columna;
+        bool movimientoValido = false;
+
+        do {
+            columna = obtenerMovimiento(jugadorActual);
+            
+            // 3. Intentar colocar la ficha
+            if (colocarFicha(tablero, columna, jugadorActual)) {
+                movimientoValido = true;
+            } else {
+                cout << "¡Columna " << columna << " está llena! Elige otra.\n";
+            }
+        } while (!movimientoValido);
+
+        // 4. Verificar condición de fin de juego (Ganador)
+        // Nota: Solo necesitamos verificar si ganó después de que hizo su movimiento
+        if (verificarGanador(tablero, jugadorActual)) {
+            dibujarTablero(tablero);
+            cout << "\n¡¡¡FELICIDADES JUGADOR " << jugadorActual << ", HAS GANADO!!!\n";
+            juegoTerminado = true;
+        } 
+        // 5. Verificar condición de fin de juego (Empate)
+        else if (estaLleno(tablero)) {
+            dibujarTablero(tablero);
+            cout << "\n¡El tablero está lleno! Es un EMPATE.\n";
+            juegoTerminado = true;
+        }
+        // 6. Cambiar de turno
+        else {
+            // Operador ternario: si es J1, cambia a J2, si no (es J2), cambia a J1
+            jugadorActual = (jugadorActual == JUGADOR_1) ? JUGADOR_2 : JUGADOR_1;
+        }
+    }
+    cout << "\n===== FIN DEL JUEGO =====\n";
+}
 
 
 
