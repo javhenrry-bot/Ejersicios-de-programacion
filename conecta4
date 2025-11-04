@@ -57,3 +57,60 @@ void dibujarTablero(const Tablero& tab) {
     }
 }
 
+// =======================================================
+// =======      AQUI LA LÓGICA DEl MOVIMIENTO        =====
+// =======================================================
+
+/**
+ * @brief Coloca la ficha en la columna elegida, buscando la posición más baja.
+ * @param tab El tablero.
+ * @param columna El índice de la columna (1 a 7).
+ * @param jugador La ficha del jugador ('X' u 'O').
+ * @return true si la ficha se colocó con éxito, false si la columna estaba llena.
+ */
+
+bool colocarFicha(Tablero& tab, int columna, char jugador) {
+    // Columna se convierte a índice de array (0 a 6)
+    int col_idx = columna - 1; 
+
+    // Recorrer el array de filas desde abajo (FILAS - 1) hacia arriba (0)
+    for (int i = FILAS - 1; i >= 0; --i) {
+        if (tab[i][col_idx] == VACIO) {
+            // Se encontró el primer espacio vacío desde abajo
+            tab[i][col_idx] = jugador;
+            return true; // Movimiento exitoso
+        }
+    }
+    return false; // Columna llena
+}
+
+/**
+ * @brief Solicita y valida la entrada del jugador para elegir una columna.
+ * @param jugadorActual La ficha del jugador al que le toca.
+ * @return La columna elegida (entre 1 y 7).
+ */
+int obtenerMovimiento(char jugadorActual) {
+    int columna;
+    cout << "Jugador " << jugadorActual << ", elige una columna (1-7): ";
+
+    // Bucle para asegurar que la entrada sea válida
+    while (!(cin >> columna) || columna < 1 || columna > COLUMNAS) {
+        // Manejo de error si se introduce algo que no es un número o está fuera de rango
+        cout << "Entrada inválida. Debe ser un número entre 1 y 7: ";
+        cin.clear(); // Limpia el estado de error de cin
+        // Ignora el resto del buffer de entrada (hasta un salto de línea)
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+    }
+    return columna;
+}
+
+
+
+// =======================================================
+// ======           FUNCIÓN PRINCIPAL                  ===
+// =======================================================
+
+int main() {
+    jugarConecta4();
+    return 0;
+}
