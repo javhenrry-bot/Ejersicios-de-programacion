@@ -104,11 +104,94 @@ int obtenerMovimiento(char jugadorActual) {
     return columna;
 }
 
+// =======================================================
+// ===      LÓGICA DE VERIFICACIÓN DE FIN DE JUEGO     ===
+// =======================================================
+
+/**
+ * @brief Verifica si un jugador ha conectado 4 fichas en cualquier dirección.
+ * * Se optimiza revisando solo alrededor de la *última ficha* colocada.
+ * @param tab El tablero.
+ * @param jugador La ficha del jugador a verificar.
+ * @param ultimaFila La fila donde se colocó la última ficha.
+ * @param ultimaCol La columna donde se colocó la última ficha.
+ * @return true si se encontró una conexión de 4, false en caso contrario.
+ */
+bool verificarGanador(const Tablero& tab, char jugador) {
+    // --- 1. VERIFICACIÓN HORIZONTAL ---
+    for (int i = 0; i < FILAS; ++i) {
+        for (int j = 0; j <= COLUMNAS - 4; ++j) {
+            if (tab[i][j] == jugador && 
+                tab[i][j+1] == jugador && 
+                tab[i][j+2] == jugador && 
+                tab[i][j+3] == jugador) {
+                return true;
+            }
+        }
+    }
+
+    // --- 2. VERIFICACIÓN VERTICAL ---
+    for (int j = 0; j < COLUMNAS; ++j) {
+        for (int i = 0; i <= FILAS - 4; ++i) {
+            if (tab[i][j] == jugador && 
+                tab[i+1][j] == jugador && 
+                tab[i+2][j] == jugador && 
+                tab[i+3][j] == jugador) {
+                return true;
+            }
+        }
+    }
+
+    // --- 3. VERIFICACIÓN DIAGONAL (Descendente: de arriba-izquierda a abajo-derecha) ---
+    for (int i = 0; i <= FILAS - 4; ++i) {
+        for (int j = 0; j <= COLUMNAS - 4; ++j) {
+            if (tab[i][j] == jugador && 
+                tab[i+1][j+1] == jugador && 
+                tab[i+2][j+2] == jugador && 
+                tab[i+3][j+3] == jugador) {
+                return true;
+            }
+        }
+    }
+
+    // --- 4. VERIFICACIÓN DIAGONAL (Ascendente: de abajo-izquierda a arriba-derecha) ---
+    for (int i = 3; i < FILAS; ++i) { // Empezamos desde la fila 3 (índice 3)
+        for (int j = 0; j <= COLUMNAS - 4; ++j) {
+            if (tab[i][j] == jugador && 
+                tab[i-1][j+1] == jugador && 
+                tab[i-2][j+2] == jugador && 
+                tab[i-3][j+3] == jugador) {
+                return true;
+            }
+        }
+    }
+
+    return false; // No hay conexión de 4
+}
+
+/**
+ * @brief Verifica si el tablero está completamente lleno (empate).
+ * @param tab El tablero.
+ * @return true si todas las celdas están ocupadas, false en caso contrario.
+ */
+bool estaLleno(const Tablero& tab) {
+    // Solo necesitamos verificar la fila superior (índice 0).
+    // Si la fila 0 no tiene ningún espacio vacío, el tablero está lleno.
+    for (int j = 0; j < COLUMNAS; ++j) {
+        if (tab[0][j] == VACIO) {
+            return false;
+        }
+    }
+    return true;
+}
 
 
 // =======================================================
-// ======           FUNCIÓN PRINCIPAL                  ===
+// =======      FUNCIÓN PRINCIPAL DEL JUEGO        =======
 // =======================================================
+
+
+
 
 int main() {
     jugarConecta4();
