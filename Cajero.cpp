@@ -10,4 +10,9 @@ int main() {    // Función principal
     float monto;               // Variable para montos en transacciones
 
 do { // Bucle principal para mostrar el menú repetidamente
-    }
+    
+
+
+
+    return 0;  // Fin del programa
+}
