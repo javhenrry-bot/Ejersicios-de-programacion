@@ -27,6 +27,9 @@ int main() {
         {3, "Carlos Sanchez", 3000.0} //el numero de cuenta de Carlos sera 3
     };
 
+    int opcion;             // Variable para almacenar la opción seleccionada por el usuario
+    int cuentaSeleccionada; // Variable para almacenar la cuenta seleccionada por el usuario
+
     while (true) { // Bucle infinito hasta que el usuario decida salir
         mostrarMenu(); // Mostramos el menú al usuario
         cout << "Seleccione una opción: "<< endl; // Pedimos al usuario que ingrese una opción
@@ -139,8 +142,80 @@ void depositar(Cuenta *cuenta) {
     cout << "Depósito exitoso. Nuevo saldo: $" << cuenta->saldo << endl; // Mensaje de éxito
 }
 
+// Función para retirar dinero
+void retirar(Cuenta *cuenta) {
+    float monto; // Variable para almacenar monto a retirar
+    cout << "Ingrese el monto a retirar: $"; // Pedimos el monto
+    if (!(cin >> monto)) { // Validamos entrada
+        cout << "Monto inválido." << endl; // Mensaje de error
+        cin.clear(); // Limpiamos estado de error
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpiamos buffer
+        return; // Salimos de la función
+    }
 
+    if (monto <= 0) { // Validamos que sea mayor que cero
+        cout << "El monto debe ser mayor a cero." << endl; // Mensaje de error
+        return;
+    }
 
+    if (monto > cuenta->saldo) { // Validamos que haya saldo suficiente
+        cout << "Saldo insuficiente." << endl; // Mensaje de error
+        return;
+    }
 
-    return 0;  // Fin del programa
+    cuenta->saldo -= monto; // Restamos el monto al saldo
+    cout << "Retiro exitoso. Nuevo saldo: $" << cuenta->saldo << endl; // Mensaje de éxito
+}
+
+// Función para transferir dinero entre cuentas
+void transferir(Cuenta cuentas[], int totalCuentas, Cuenta *cuentaOrigen) {
+    int numeroDestino; // Número de cuenta destino
+    float monto;       // Monto a transferir
+
+    cout << "Ingrese el número de cuenta destino: "; // Pedimos cuenta destino
+    if (!(cin >> numeroDestino)) { // Validamos entrada
+        cout << "Número de cuenta inválido." << endl; // Mensaje de error
+        cin.clear(); // Limpiamos estado de error
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpiamos buffer
+        return;
+    }
+
+    int indiceDestino = -1; // Variable para almacenar índice de cuenta destino
+    for (int i = 0; i < totalCuentas; i++) { // Buscamos la cuenta destino
+        if (cuentas[i].numeroCuenta == numeroDestino) {
+            indiceDestino = i; // Guardamos el índice
+            break;
+        }
+    }
+
+    if (indiceDestino == -1) { // Si no se encontró la cuenta
+        cout << "Cuenta destino no encontrada." << endl; // Mensaje de error
+        return;
+    }
+
+    cout << "Ingrese el monto a transferir: "; // Pedimos el monto a transferir
+    if (!(cin >> monto)) { // Validamos entrada
+        cout << "Monto inválido." << endl; // Mensaje de error
+        cin.clear(); // Limpiamos estado de error
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpiamos buffer
+        return;
+    }
+
+    if (monto <= 0) { // Validamos monto positivo
+        cout << "El monto debe ser mayor a cero." << endl; // Mensaje de error
+        return;
+    }
+
+    if (monto > cuentaOrigen->saldo) { // Validamos saldo suficiente
+        cout << "Saldo insuficiente." << endl; // Mensaje de error
+        return;
+    }
+
+    // Realizamos la transferencia
+    cuentaOrigen->saldo -= monto; // Restamos del saldo origen
+    cuentas[indiceDestino].saldo += monto; // Sumamos al saldo destino
+
+    cout << "Transferencia exitosa." << endl; // Mensaje de éxito
+    cout << "Saldo actual de $" << cuentaOrigen->titular << ": " << cuentaOrigen->saldo << endl; // Mostramos saldo origen
+    cout << "Saldo actual de $" << cuentas[indiceDestino].titular << ": " << cuentas[indiceDestino].saldo << endl; // Mostramos saldo destino
 }
