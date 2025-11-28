@@ -1,13 +1,84 @@
-#include <iostream>          // Librería para entrada y salida estándar
-#include <string>            // Permite usar cadenas de texto (string)
-using namespace std;         // Evita escribir std:: antes de cout o string
+#include <iostream>     // Permite usar cin, cout
+#include <string>       // Permite usar strings
+#include <stdexcept>    // Permite usar excepciones
+using namespace std;    // Evita escribir std:: en cada línea
 
-// Estructura para almacenar un producto
-struct Producto {            // Se define la estructura Producto
-    string nombre;           // Nombre del producto
-    float precio;            // Precio del producto
-    int cantidad;            // Cantidad en inventario
+// ESTRUCTURA DEL PRODUCTO
+struct Producto {
+    int id;             // ID del producto
+    string nombre;      // Nombre del producto
+    float precio;       // Precio del producto
+    int cantidad;       // Cantidad en inventario
 };
+
+// ==========================================
+//   FUNCIÓN PARA MOSTRAR UN PRODUCTO
+// ==========================================
+void mostrarProducto(const Producto &p) {
+    cout << "ID: " << p.id 
+         << " | Nombre: " << p.nombre 
+         << " | Precio: " << p.precio 
+         << " | Cantidad: " << p.cantidad << endl;
+}
+
+// ==========================================================
+//   FUNCIÓN DE BÚSQUEDA POR ID (LANZA EXCEPCIÓN SI NO EXISTE)
+// ==========================================================
+Producto* buscarPorID(Producto productos[], int n, int idBuscado) {
+    for (int i = 0; i < n; i++) {                    // Recorrido del arreglo
+        if (productos[i].id == idBuscado)           // Si se encuentra coincidencia
+            return &productos[i];                   // Devuelve puntero al producto
+    }
+    throw runtime_error("ERROR: Producto no encontrado por ID.");  // Excepción
+}
+
+// ================================================================
+//   FUNCIÓN DE BÚSQUEDA POR NOMBRE (LANZA EXCEPCIÓN SI NO EXISTE)
+// ================================================================
+Producto* buscarPorNombre(Producto productos[], int n, string nombreBuscado) {
+    for (int i = 0; i < n; i++) {                     // Recorrido del arreglo
+        if (productos[i].nombre == nombreBuscado)    // Comparar nombre
+            return &productos[i];                    // Retorna puntero
+    }
+    throw runtime_error("ERROR: Producto no encontrado por nombre."); // Excepción
+}
+
+// ============================================
+//   ORDENAMIENTO BURBUJA POR PRECIO
+// ============================================
+void ordenarPorPrecio(Producto productos[], int n) {
+    for (int i = 0; i < n - 1; i++) {                 // Recorrido general
+        for (int j = 0; j < n - i - 1; j++) {         // Comparaciones por burbuja
+            if (productos[j].precio > productos[j+1].precio) { // Si están mal ordenados
+                swap(productos[j], productos[j+1]);   // Intercambiar posiciones
+            }
+        }
+    }
+}
+
+// ============================================
+//   ORDENAMIENTO BURBUJA POR CANTIDAD
+// ============================================
+void ordenarPorCantidad(Producto productos[], int n) {
+    for (int i = 0; i < n - 1; i++) {                 // Recorrido general
+        for (int j = 0; j < n - i - 1; j++) {         // Comparaciones por burbuja
+            if (productos[j].cantidad > productos[j+1].cantidad) { // Si están mal ordenados
+                swap(productos[j], productos[j+1]);   // Intercambiar
+            }
+        }
+    }
+}
+
+// ===============================
+//   MOSTRAR TODA LA LISTA
+// ===============================
+void mostrarLista(Producto productos[], int n) {
+    cout << "\n--- LISTA DE PRODUCTOS ---\n";
+    for (int i = 0; i < n; i++) {        // Recorre todo el arreglo
+        mostrarProducto(productos[i]);   // Muestra cada producto
+    }
+}
+
 
 int main() {                 // Inicio del programa principal
 
