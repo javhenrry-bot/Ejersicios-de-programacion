@@ -1,5 +1,7 @@
-#include <iostream>
-using namespace std;
+#include <iostream>     // Permite usar cin y cout
+#include <stdexcept>    // Permite usar excepciones (runtime_error)
+#include <cmath>        // Funciones matemáticas: sqrt, pow
+using namespace std;    // Para evitar usar std
 
 int main() {
     double num1, num2;   // Variables para los números
