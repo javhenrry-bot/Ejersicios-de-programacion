@@ -79,122 +79,111 @@ void mostrarLista(Producto productos[], int n) {
     }
 }
 
+int main() {
 
-int main() {                 // Inicio del programa principal
+    // ====================================
+    //   REGISTRO 10 PRODUCTOS COMO INICIO
+    // ====================================
+    Producto productos[10] = {
+        {1,  "Pan",        1.20, 50},
+        {2,  "Leche",      0.99, 30},
+        {3,  "Queso",      2.50, 20},
+        {4,  "Huevos",     1.80, 40},
+        {5,  "Arroz",      1.10, 80},
+        {6,  "Azucar",     0.90, 60},
+        {7,  "Cafe",       3.50, 15},
+        {8,  "Cereal",     2.20, 25},
+        {9,  "Fideos",     1.00, 70},
+        {10, "Aceite",     4.00, 10}
+    };
 
-    const int MAX = 50;      // Límite máximo de productos
-    Producto productos[MAX]; // Arreglo donde se guardarán los productos
-    int total = 0;           // Cantidad actual de productos registrados
+    int opcion;   // Guardará opción del usuario
 
-    int opcion;              // Variable para la opción del menú
+    // Bucle principal del menú
+    do {
+        cout << "\n========= MENU =========\n";
+        cout << "1. Mostrar productos\n";
+        cout << "2. Buscar por ID\n";
+        cout << "3. Buscar por nombre\n";
+        cout << "4. Ordenar por precio\n";
+        cout << "5. Ordenar por cantidad\n";
+        cout << "6. Modificar inventario (puntero)\n";
+        cout << "0. Salir\n";
+        cout << "Elige una opción: ";
+        cin >> opcion;
 
-    do {                     // Inicia ciclo del menú
+        // Manejo del menú
+        switch(opcion) {
 
-        cout << "\n===== SISTEMA DE INVENTARIO =====\n"; //
-        cout << "1. Agregar producto\n";                // Opción 1
-        cout << "2. Mostrar productos\n";               // Opción 2
-        cout << "3. Buscar producto por nombre\n";      // Opción 3
-        cout << "4. Ordenar por nombre\n";              // Opción 4
-        cout << "5. Ordenar por precio\n";              // Opción 5
-        cout << "6. Salir\n";                           // Opción 6
-        cout << "Seleccione una opcion: ";              // Solicita opción
-        cin >> opcion;                                  // Guarda opción
-
-        switch (opcion) {                               // Evalúa la opción seleccionada
-
-        case 1:                                         // Agregar producto
-            if (total < MAX) {                          // Verifica si hay espacio
-                cout << "\n-- Agregar Producto --\n";   // Título
-
-                cout << "Nombre: ";                     // Pide nombre
-                cin >> productos[total].nombre;         // Guarda nombre
-
-                cout << "Precio: ";                     // Pide precio
-                cin >> productos[total].precio;         // Guarda precio
-
-                cout << "Cantidad: ";                   // Pide cantidad
-                cin >> productos[total].cantidad;       // Guarda cantidad
-
-                total++;                                // Aumenta contador de productos
-                cout << "Producto agregado exitosamente.\n"; // Mensaje de éxito
-            } else {
-                cout << "Inventario lleno.\n";          // Si ya no hay espacio
-            }
+        case 1:
+            mostrarLista(productos, 10);
             break;
 
-        case 2:                                         // Mostrar productos
-            cout << "\n-- Lista de Productos --\n";     // Título
-            if (total == 0) {                           // Si no hay productos
-                cout << "No hay productos registrados.\n";
-            } else {
-                for (int i = 0; i < total; i++) {       // Recorre todos los productos
-                    cout << i + 1 << ". ";              // Número del producto
-                    cout << "Nombre: " << productos[i].nombre << " | ";   // Nombre
-                    cout << "Precio: $" << productos[i].precio << " | ";  // Precio
-                    cout << "Cantidad: " << productos[i].cantidad << endl;// Cantidad
-                }
+        case 2: {
+            int id;
+            cout << "Ingrese ID: ";
+            cin >> id;
+            try {
+                Producto* p = buscarPorID(productos, 10, id); // Usa puntero
+                mostrarProducto(*p);                           // Muestra el contenido apuntado
             }
-            break;
-
-        case 3:                                         // Buscar producto por nombre
-        {
-            cout << "\n-- Buscar Producto --\n";        // Título
-            string buscar;                              // Variable para el nombre a buscar
-            cout << "Ingrese el nombre a buscar: ";     // Solicita nombre
-            cin >> buscar;                              // Lo guarda
-
-            bool encontrado = false;                    // Variable para saber si se encontró
-
-            for (int i = 0; i < total; i++) {           // Recorre los productos
-                if (productos[i].nombre == buscar) {    // Compara nombres
-                    cout << "Producto encontrado:\n";   // Mensaje
-                    cout << "Nombre: " << productos[i].nombre << endl;
-                    cout << "Precio: $" << productos[i].precio << endl;
-                    cout << "Cantidad: " << productos[i].cantidad << endl;
-                    encontrado = true;                  // Marca que se encontró
-                    break;                              // Termina la búsqueda
-                }
-            }
-
-            if (!encontrado) {                          // Si no se encontró
-                cout << "Producto no encontrado.\n";
+            catch (exception &e) {
+                cout << e.what() << endl;                     // Muestra mensaje de error
             }
             break;
         }
 
-        case 4:                                         // Ordenar por nombre
-            cout << "\n-- Ordenando por nombre... --\n";
-            for (int i = 0; i < total - 1; i++) {       // Primer bucle del método burbuja
-                for (int j = 0; j < total - 1 - i; j++) {// Segundo bucle del método burbuja
-                    if (productos[j].nombre > productos[j+1].nombre) { // Compara nombres
-                        swap(productos[j], productos[j+1]);            // Intercambia posiciones
-                    }
-                }
+        case 3: {
+            string nombre;
+            cout << "Ingrese nombre: ";
+            cin >> nombre;
+            try {
+                Producto* p = buscarPorNombre(productos, 10, nombre); // Puntero
+                mostrarProducto(*p);                                  // Mostrar
             }
-            cout << "Productos ordenados por nombre.\n"; // Confirmación
+            catch (exception &e) {
+                cout << e.what() << endl;                             // Excepción
+            }
+            break;
+        }
+
+        case 4:
+            ordenarPorPrecio(productos, 10);  // Ordenamiento burbuja
+            cout << "Ordenado por precio.\n";
             break;
 
-        case 5:                                         // Ordenar por precio
-            cout << "\n-- Ordenando por precio... --\n";
-            for (int i = 0; i < total - 1; i++) {       // Primer bucle
-                for (int j = 0; j < total - 1 - i; j++) {// Segundo bucle
-                    if (productos[j].precio > productos[j+1].precio) { // Compara precios
-                        swap(productos[j], productos[j+1]);            // Intercambia
-                    }
-                }
-            }
-            cout << "Productos ordenados por precio.\n"; // Confirmación
+        case 5:
+            ordenarPorCantidad(productos, 10); // Ordenamiento burbuja
+            cout << "Ordenado por cantidad.\n";
             break;
 
-        case 6:
-            cout << "Saliendo del sistema...\n";        // Mensaje de salida
+        case 6: {
+            int id, nuevaCant;
+            cout << "ID del producto: ";
+            cin >> id;
+
+            try {
+                Producto* p = buscarPorID(productos, 10, id); // Obtener puntero al producto
+                cout << "Cantidad nueva: ";
+                cin >> nuevaCant;
+                p->cantidad = nuevaCant;                     // Modificación mediante puntero
+                cout << "Inventario actualizado.\n";
+            }
+            catch (exception &e) {
+                cout << e.what() << endl;
+            }
+            break;
+        }
+
+        case 0:
+            cout << "Saliendo...\n";
             break;
 
         default:
-            cout << "Opcion no valida.\n";              // Error para opciones inexistentes
+            cout << "Opción invalida.\n";
         }
 
-    } while (opcion != 6);                              // Repite hasta que se elija salir
+    } while (opcion != 0); // Repite mientras no elijan salir
 
-    return 0;                                           // Fin del programa
+    return 0;  // Fin del programa
 }
