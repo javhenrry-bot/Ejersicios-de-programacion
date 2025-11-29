@@ -59,49 +59,92 @@ double raiz(double x) {
 }
 
 //==============================================================================
+
+//  PROGRAMA PRINCIPAL
 int main() {
-    double num1, num2;   // Variables para los números
-    char operacion;      // Variable para la operación a realizar
+    int opcion;                         // Variable para almacenar elección del menú
 
-    cout << "=== CALCULADORA BASICA ===\n";
+    do {                                // Bucle para mostrar menú repetidamente
+        cout << "\n=========== CALCULADORA CIENTÍFICA ===========" << endl;
+        cout << "1. Suma" << endl;      // Opción de suma
+        cout << "2. Resta" << endl;     // Opción de resta
+        cout << "3. Multiplicacion" << endl; // Opción de multiplicación
+        cout << "4. Division" << endl;  // Opción de división
+        cout << "5. Factorial" << endl; // Factorial (recursivo)
+        cout << "6. Potencia" << endl;  // Potencia (con parámetro por omisión)
+        cout << "7. Raiz cuadrada" << endl; // Raíz cuadrada
+        cout << "0. Salir" << endl;     // Opción para salir
+        cout << "Elija una opcion: ";   // Solicita opción
+        cin >> opcion;                  // Guarda opción del usuario
 
-    // Pedir al usuario los números
-    cout << "Ingrese el primer numero: ";
-    cin >> num1;
+        try {                           // Inicia bloque de manejo de errores
 
-    cout << "Ingrese el segundo numero: ";
-    cin >> num2;
+            double a, b;                // Variables numéricas
+            int n;                      // Variable para factorial o exponente
 
-    // Pedir operación
-    cout << "Ingrese la operacion (+, -, *, /): ";
-    cin >> operacion;
+            switch(opcion) {            // Selecciona acción según opción
 
-    // Realizar la operación
-    switch (operacion) {
-        case '+':
-            cout << "Resultado: " << num1 + num2 << endl;
-            break;
+            case 1:                     // SUMA
+                cout << "Ingrese dos numeros: ";
+                cin >> a >> b;          // Lee dos números
+                cout << "Resultado: " << sumar(a, b) << endl; // Llama función sumar
+                break;
 
-        case '-':
-            cout << "Resultado: " << num1 - num2 << endl;
-            break;
+            case 2:                     // RESTA
+                cout << "Ingrese dos numeros: ";
+                cin >> a >> b;
+                cout << "Resultado: " << restar(a, b) << endl;
+                break;
 
-        case '*':
-            cout << "Resultado: " << num1 * num2 << endl;
-            break;
+            case 3:                     // MULTIPLICACIÓN
+                cout << "Ingrese dos numeros: ";
+                cin >> a >> b;
+                cout << "Resultado: " << multiplicar(a, b) << endl;
+                break;
 
-        case '/':
-            if (num2 == 0) {
-                cout << "ERROR: No se puede dividir entre cero." << endl;
-            } else {
-                cout << "Resultado: " << num1 / num2 << endl;
+            case 4:                     // DIVISIÓN
+                cout << "Ingrese dos numeros: ";
+                cin >> a >> b;
+                cout << "Resultado: " << dividir(a, b) << endl; // Puede lanzar excepción
+                break;
+
+            case 5:                     // FACTORIAL
+                cout << "Ingrese un numero entero: ";
+                cin >> n;
+                cout << "Resultado: " << factorial(n) << endl; // Llama función recursiva
+                break;
+
+            case 6:                     // POTENCIA
+                cout << "Ingrese base: ";
+                cin >> a;
+                cout << "Ingrese exponente (opcional, si pone 0 se usa por defecto 2): ";
+                cin >> n;
+
+                if (n == 0)                             // Si ingresa 0 usamos parámetro por omisión
+                    cout << "Resultado: " << potencia(a) << endl;
+                else
+                    cout << "Resultado: " << potencia(a, n) << endl;
+                break;
+
+            case 7:                     // RAÍZ CUADRADA
+                cout << "Ingrese un numero: ";
+                cin >> a;
+                cout << "Resultado: " << raiz(a) << endl; // Puede lanzar excepción
+                break;
+
+            case 0:                     // SALIR
+                cout << "Saliendo..." << endl;
+                break;
+
+            default:                    // Opción no válida
+                cout << "Opcion invalida." << endl;
             }
-            break;
 
-        default:
-            cout << "Operacion invalida." << endl;
-            break;
-    }
+        } catch (exception &e) {        // Captura cualquier excepción lanzada
+            cout << e.what() << endl;   // Muestra mensaje de error
+        }
 
-    return 0;
+    } while (opcion != 0);              // Repite mientras no se elija "Salir"
+
+    return 0;                           // Fin del programa
 }
